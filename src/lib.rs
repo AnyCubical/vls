@@ -1,4 +1,4 @@
-mod coordinate {
+pub mod coordinate {
     #[derive(Clone)]
     #[derive(Debug)]
     pub struct Coordinate {
@@ -28,7 +28,7 @@ mod coordinate {
     }
 }
 
-mod movement_not_possible {
+pub mod movement_not_possible {
     use std::fmt;
 
     #[derive(Debug)]
@@ -53,7 +53,7 @@ mod movement_not_possible {
     impl std::error::Error for MovementNotPossible {}
 }
 
-mod traffic_area {
+pub mod traffic_area {
     use crate::coordinate::Coordinate;
     use crate::movement_not_possible::MovementNotPossible;
 
@@ -162,7 +162,7 @@ mod traffic_area {
     }
 }
 
-mod traffic_control_logic{
+pub mod traffic_control_logic{
     use crate::traffic_area::{TrafficArea};
     use crate::movement_not_possible::MovementNotPossible;
     use crate::coordinate::Coordinate;
