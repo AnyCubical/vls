@@ -26,15 +26,15 @@ To use this project, you can add it as a dependency in your Rust project's Cargo
 
 ```rust
 [dependencies]
-vls-dhbw = "0.1.0"
+tcs-dhbw = "0.1.0"
 ```
 
 Then, you can import the modules you need in your Rust code:
 
 ```rust
-use vls_dhbw::coordinates::Coordinate;
-use vls_dhbw::traffic_area::TrafficArea;
-use vls_dhbw::traffic_control_logic::TrafficControlLogic;
+use tcs_dhbw::coordinates::Coordinate;
+use tcs_dhbw::traffic_area::TrafficArea;
+use tcs_dhbw::traffic_control_logic::TrafficControlLogic;
 ```
 
 ## License
