@@ -1,6 +1,6 @@
 [package]
 name = "tcs-dhbw"
-version = "0.1.1"
+version = "0.1.2"
 author = "Anycubical"
 description = "Modules for a model traffic control system project at DHBW Stuttgart"
 license = "MIT"
@@ -10,5 +10,5 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
-name = "my_lib"
+name = "vls_dhbw"
 path = "src/lib.rs"
