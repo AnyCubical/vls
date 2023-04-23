@@ -1,6 +1,6 @@
 [package]
 name = "tcs-dhbw"
-version = "0.1.3"
+version = "0.1.4"
 author = "Anycubical"
 description = "Modules for a model traffic control system project at DHBW Stuttgart"
 license = "MIT"

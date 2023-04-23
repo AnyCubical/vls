@@ -26,7 +26,7 @@ To use this project, you can add it as a dependency in your Rust project's Cargo
 
 ```rust
 [dependencies]
-tcs-dhbw = "0.1.0"
+tcs-dhbw = "0.1.4"
 ```
 
 Then, you can import the modules you need in your Rust code:

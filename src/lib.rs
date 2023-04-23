@@ -1,6 +1,5 @@
 pub mod coordinate {
-    #[derive(Clone)]
-    #[derive(Debug)]
+    #[derive(Clone, Debug)]
     pub struct Coordinate {
         pub x: i16,
         pub y: i16,
@@ -71,8 +70,7 @@ pub mod traffic_area {
             let x = from.get_x() as usize;
             let y = from.get_y() as usize;
 
-            let position = self
-                .area[x][y]
+            let position = self.area[x][y]
                 .iter_mut()
                 .position(|client_id| *client_id == id);
 
@@ -89,15 +87,16 @@ pub mod traffic_area {
             let x = to.get_x() as usize;
             let y = to.get_y() as usize;
 
-            let position = self
-                .area[x][y]
+            let position = self.area[x][y]
                 .iter()
                 .position(|client_id| *client_id == -1);
 
             match position {
                 Some(pos) => {
                     if self.area[x][y][pos] == id {
-                        Err(MovementNotPossible::new("id already placed at target position"))
+                        Err(MovementNotPossible::new(
+                            "id already placed at target position",
+                        ))
                     } else {
                         self.area[x][y][pos] = id;
                         Ok(())
@@ -110,7 +109,10 @@ pub mod traffic_area {
         pub fn get_position(&self, id: i16) -> Option<Coordinate> {
             for x in 0..self.area.len() {
                 for y in 0..self.area[x].len() {
-                    if let Some(_) = self.area[x][y].iter().position(|client_id| *client_id == id) {
+                    if let Some(_) = self.area[x][y]
+                        .iter()
+                        .position(|client_id| *client_id == id)
+                    {
                         return Some(Coordinate::new(x as i16, y as i16));
                     }
                 }
@@ -162,10 +164,10 @@ pub mod traffic_area {
     }
 }
 
-pub mod traffic_control_logic{
-    use crate::traffic_area::{TrafficArea};
-    use crate::movement_not_possible::MovementNotPossible;
+pub mod traffic_control_logic {
     use crate::coordinate::Coordinate;
+    use crate::movement_not_possible::MovementNotPossible;
+    use crate::traffic_area::TrafficArea;
 
     pub struct TrafficControlLogic {
         traffic_area: TrafficArea,
@@ -207,12 +209,17 @@ pub mod traffic_control_logic{
 
             for x_offset in -1..=1 {
                 for y_offset in -1..=1 {
-                    let x = (current_position.x + x_offset).max(0).min((self.traffic_area.get_area().len() - 1) as i16);
-                    let y = (current_position.y + y_offset).max(0).min((self.traffic_area.get_area()[0].len() - 1) as i16);
+                    let x = (current_position.x + x_offset)
+                        .max(0)
+                        .min((self.traffic_area.get_area().len() - 1) as i16);
+                    let y = (current_position.y + y_offset)
+                        .max(0)
+                        .min((self.traffic_area.get_area()[0].len() - 1) as i16);
 
                     let coordinate_to_check = Coordinate::new(x, y);
                     if self.traffic_area.is_free(&coordinate_to_check) {
-                        let new_distance = Self::get_distance(&coordinate_to_check, &target_to_reach);
+                        let new_distance =
+                            Self::get_distance(&coordinate_to_check, &target_to_reach);
                         if new_distance < distance {
                             distance = new_distance;
                             best_coordinate = coordinate_to_check;
@@ -238,6 +245,10 @@ pub mod traffic_control_logic{
             } else {
                 ((x1 - x2).powf(2.0) + (y1 - y2).powf(2.0)).sqrt()
             }
+        }
+
+        pub fn get_traffic_area(&self) -> &TrafficArea {
+            &self.traffic_area
         }
     }
 }
