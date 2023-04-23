@@ -1,5 +1,5 @@
 pub mod coordinate {
-    #[derive(Clone, Debug)]
+    #[derive(Clone, Debug, PartialEq, Eq, Hash)]
     pub struct Coordinate {
         pub x: i16,
         pub y: i16,
@@ -19,7 +19,6 @@ pub mod coordinate {
         }
     }
 
-    // Implementierung der Default-Trait für Coordinate
     impl Default for Coordinate {
         fn default() -> Self {
             Self { x: -1, y: -1 }
@@ -55,15 +54,18 @@ pub mod movement_not_possible {
 pub mod traffic_area {
     use crate::coordinate::Coordinate;
     use crate::movement_not_possible::MovementNotPossible;
+    use std::collections::HashMap;
 
     pub struct TrafficArea {
         area: Vec<Vec<Vec<i16>>>,
+        car_positions: HashMap<i16, Coordinate>,
     }
 
     impl TrafficArea {
         pub fn new(max_per_node: usize, max_size_x: usize, max_size_y: usize) -> Self {
             let area = vec![vec![vec![-1; max_per_node]; max_size_y]; max_size_x];
-            TrafficArea { area }
+            let car_positions = HashMap::new();
+            TrafficArea { area, car_positions }
         }
 
         pub fn remove(&mut self, id: i16, from: &Coordinate) -> Result<(), MovementNotPossible> {
@@ -77,6 +79,7 @@ pub mod traffic_area {
             match position {
                 Some(pos) => {
                     self.area[x][y][pos] = -1;
+                    self.car_positions.remove(&id);
                     Ok(())
                 }
                 None => Err(MovementNotPossible::new("id not found at start")),
@@ -99,6 +102,7 @@ pub mod traffic_area {
                         ))
                     } else {
                         self.area[x][y][pos] = id;
+                        self.car_positions.insert(id, to.clone());
                         Ok(())
                     }
                 }
@@ -107,23 +111,12 @@ pub mod traffic_area {
         }
 
         pub fn get_position(&self, id: i16) -> Option<Coordinate> {
-            for x in 0..self.area.len() {
-                for y in 0..self.area[x].len() {
-                    if let Some(_) = self.area[x][y]
-                        .iter()
-                        .position(|client_id| *client_id == id)
-                    {
-                        return Some(Coordinate::new(x as i16, y as i16));
-                    }
-                }
-            }
-            None
+            self.car_positions.get(&id).cloned()
         }
 
         pub fn is_free(&self, position: &Coordinate) -> bool {
             let x = position.get_x() as usize;
             let y = position.get_y() as usize;
-
             self.area[x][y].iter().any(|client_id| *client_id == -1)
         }
 
@@ -143,6 +136,7 @@ pub mod traffic_area {
                     }
                 }
             }
+            self.car_positions.clear();
         }
     }
 
@@ -215,7 +209,6 @@ pub mod traffic_control_logic {
                     let y = (current_position.y + y_offset)
                         .max(0)
                         .min((self.traffic_area.get_area()[0].len() - 1) as i16);
-
                     let coordinate_to_check = Coordinate::new(x, y);
                     if self.traffic_area.is_free(&coordinate_to_check) {
                         let new_distance =
